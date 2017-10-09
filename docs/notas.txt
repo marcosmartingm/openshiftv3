@@ -1,0 +1,46 @@
+/etc/init.d/apache2 stop
+
+https://blog.codeship.com/running-rails-development-environment-docker/
+
+Mostrar contenedores en ejecucion
+docker ps
+
+Parar un contenedor
+docker stop 47c6ee1f64b4
+
+
+Construir proyecto
+docker-compose build
+
+Project setup
+
+$ docker-compose run app bundle
+$ docker-compose run app bundle exec rake db:setup db:migrate
+$ docker-compose up -d
+
+Demo steps
+Docker processes and port redirection
+
+$ docker-compose ps
+
+Rails console
+
+$ docker-compose run app bundle exec rails c
+
+Test container with default command
+
+$ docker-compose run test
+
+List linked hostnames
+
+$ docker-compose run app bash
+> $ cat /etc/hosts
+> $ curl elasticsearch:9200
+
+Scale app front-ends
+
+$ docker-compose up --scale app=3
+$ docker-compose up -d --force-recreate # Recreate haproxy container to discover new nodes
+$ curl docker_host:8080/secrets.json # Perform a HTTP request
+$ docker-compose logs app # Watch the HTTP requests being delivered through the Load Balancer
+$ open http://docker_host:1937 # HAProxy Stats

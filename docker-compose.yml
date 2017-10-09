@@ -1,0 +1,26 @@
+app:
+  build: .
+  command: rails s
+  volumes:
+    - .:/app
+  ports:
+    - "3000:3000"
+  links:
+    - postgres
+
+postgres:
+  image: postgres:9.5
+  ports:
+    - "5432"
+
+phpPgAdmin:
+  container_name: phppgadmin
+  image: fizix/docker-pgadmin:php-fpm-environment
+  environment:
+    - POSTGRESQL_HOST=postgres
+    - POSTGRESQL_PORT=5432
+    - POSTGRESQL_DEFAULT_DB=postgres
+  ports:
+    - 80:80
+  links:
+    - postgres
