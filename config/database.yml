@@ -1,4 +1,7 @@
-#
+<% user = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "root" : ENV["POSTGRESQL_USER"] %>
+<% password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"] %>
+<% db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase %>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -8,15 +11,22 @@ default: &default
   host: <%= ENV['POSTGRES_PORT_5432_TCP_ADDR'] %>
   port: <%= ENV['POSTGRES_PORT_5432_TCP_PORT'] %>
 
-
 development:
   <<: *default
   database: pruebas_development
 
 test:
-  <<: *default
   database: pruebas_test
+  pool: 5
+  timeout: 5000
 
 production:
   <<: *default
-  database: pruebas_production
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV["POSTGRESQL_MAX_CONNECTIONS"] || 5 %>
+  username: <%= user %>
+  password: <%= password %>
+  host: <%= ENV["#{db_service}_SERVICE_HOST"] %>
+  port: <%= ENV["#{db_service}_SERVICE_PORT"] %>
+  database: <%= ENV["POSTGRESQL_DATABASE"] %>
